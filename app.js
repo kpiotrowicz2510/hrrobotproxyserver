@@ -51,6 +51,19 @@ res.send(JSON.stringify(responseMessage));
 next();
         })
   }
+  function respondGetHistory(req, res, next){
+    responseMessage = "";
+    globalClient.Conversations.Conversations_GetActivities({ conversationId: req.params.convId, watermark: null })
+        .then(function (response) {
+            //watermark = response.obj.watermark;     
+            //response.obj.activities = response.obj.activities.filter(function (m) { return m.from.id !== directLineClientName });
+                    // use watermark so subsequent requests skip old messages 
+            responseMessage = response.obj.activities;
+        }).then(function(){
+res.send(JSON.stringify(responseMessage));
+next();
+        })
+  }
 var server = restify.createServer();
 
 
@@ -68,6 +81,7 @@ server.use(cors.actual)
 
 server.get('/sendmessage/:message', respondMessage);
 server.get('/getmessages/:convId', respondGetMessage);
+server.get('/gethistory/:convId', respondGetHistory);
 server.head('/hello/:name', respond);
 
 server.listen(process.env.PORT || 9099, function() {
