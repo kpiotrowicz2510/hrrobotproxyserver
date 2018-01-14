@@ -56,7 +56,7 @@ server.get('/sendmessage/:message', respondMessage);
 server.get('/getmessages/:convId', respondGetMessage);
 server.head('/hello/:name', respond);
 
-server.listen(8080, function() {
+server.listen(process.env.PORT || 80, function() {
   console.log('%s listening at %s', server.name, server.url);
 });
 
