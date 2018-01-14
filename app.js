@@ -9,7 +9,7 @@ var globalClient;
 var directLineSecret = '0LRqFqrcrU0.cwA.ZFM.9TmbBrE5sHUw0HuULihitN5mLk3bflM3D-fDsu-wQAc';
 var directLineClientName = 'DirectLineClient';
 var directLineSpecUrl = 'https://docs.botframework.com/en-us/restapi/directline3/swagger.json';
-
+var watermark = null;
 var restify = require('restify');
 function respond(req, res, next) {
   res.send('hello ' + req.params.name);
@@ -40,9 +40,9 @@ function respondMessage(req, res, next) {
   }
   function respondGetMessage(req, res, next){
     responseMessage = "";
-    globalClient.Conversations.Conversations_GetActivities({ conversationId: req.params.convId, watermark: null })
+    globalClient.Conversations.Conversations_GetActivities({ conversationId: req.params.convId, watermark: watermark })
         .then(function (response) {
-            //watermark = response.obj.watermark;     
+            watermark = response.obj.watermark;     
             response.obj.activities = response.obj.activities.filter(function (m) { return m.from.id !== directLineClientName });
                     // use watermark so subsequent requests skip old messages 
             responseMessage = response.obj.activities;
