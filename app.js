@@ -47,6 +47,12 @@ function respondMessage(req, res, next) {
                     // use watermark so subsequent requests skip old messages 
             responseMessage = response.obj.activities;
         }).then(function(){
+            var fs = require('fs');
+var stream = fs.createWriteStream("history.txt");
+stream.once('open', function(fd) {
+  stream.write(JSON.stringify(responseMessage)+"$");
+  stream.end();
+});
 res.send(JSON.stringify(responseMessage));
 next();
         })
@@ -60,7 +66,10 @@ next();
                     // use watermark so subsequent requests skip old messages 
             responseMessage = response.obj.activities;
         }).then(function(){
-res.send(JSON.stringify(responseMessage));
+            var fs = require('fs');
+var path = process.cwd();
+var buffer = fs.readFileSync(path + "\\history.txt");
+res.send(buffer.toString());
 next();
         })
   }
