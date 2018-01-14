@@ -55,11 +55,15 @@ var server = restify.createServer();
 server.get('/sendmessage/:message', respondMessage);
 server.get('/getmessages/:convId', respondGetMessage);
 server.head('/hello/:name', respond);
-server.use(restify.CORS({
-    origins: ['*'],
-    credentials: false, // defaults to false
-    headers: ['']  // sets expose-headers
-  }));
+var corsMiddleware = require('restify-cors-middleware');
+
+var cors = corsMiddleware({
+  preflightMaxAge: 5,
+  origins: ['*']
+});
+
+server.pre(cors.preflight);
+server.use(cors.actual);
 server.listen(process.env.PORT || 80, function() {
   console.log('%s listening at %s', server.name, server.url);
 });
