@@ -48,7 +48,8 @@ function respondMessage(req, res, next) {
             responseMessage = response.obj.activities;
         }).then(function(){
             var fs = require('fs');
-var stream = fs.createWriteStream("history.txt");
+            var path = process.cwd();
+var stream = fs.createWriteStream(path+"/history.txt");
 stream.once('open', function(fd) {
   stream.write(JSON.stringify(responseMessage)+"$");
   stream.end();
@@ -68,7 +69,7 @@ next();
         }).then(function(){
             var fs = require('fs');
 var path = process.cwd();
-var buffer = fs.readFileSync(path + "\\history.txt");
+var buffer = fs.readFileSync(path + "/history.txt");
 res.send(buffer.toString());
 next();
         })
